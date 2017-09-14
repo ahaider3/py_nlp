@@ -41,8 +41,8 @@ def news_getter(source):
 
 def find_common(descriptions):
     corpus = ""
-    norm_desc = [(src, normalize_str(i), normalize_str(j), k) for src, i, j, k in descriptions]
-    for src, i, j, k in norm_desc:
+    norm_desc = [(src, normalize_str(i), normalize_str(j), k, i, j) for src, i, j, k in descriptions]
+    for src, i, j, k, l, m in norm_desc:
         corpus += " " + i + " \n " + j + " "
 #    print(corpus)
     r = Rake()
@@ -56,13 +56,13 @@ def find_common(descriptions):
     print(temp_k)
     keywords = temp_k
 #    print(corpus)
-    for src, title, desc, url in norm_desc:
+    for src, title, desc, url, old_title, old_desc in norm_desc:
       for word in keywords:
 #        for word in keyword.split():
 #        print((word, title))
         if word in title or word in desc:
           flag = 1
-          appends.append((src, title, desc, url))
+          appends.append((src, title, desc, url, old_title, old_desc))
           break
         if flag:
           flag = 0
@@ -70,7 +70,7 @@ def find_common(descriptions):
 #    print(appends)
     print(len(appends), len(norm_desc))
 #    print(norm_desc[1])
-    data = [{"title":a[1], "description":a[2], "url_image":a[3], "source": a[0] } for a in appends]
+    data = [{"title":a[1], "description":a[2], "url_image":a[3], "source": a[0], "old_title": a[4], "old_description": a[5]} for a in appends]
 #    print(data)
     delete()
     write(data)

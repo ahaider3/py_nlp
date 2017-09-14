@@ -35,7 +35,7 @@ def main(argv):
       result.append({"source":d[0], "time": d[2], "text": d[1], "sentiment": sent })
 
   new_result = smooth(result, 2, int(argv[5]))
-  delete("follow")
+#  delete("follow_ft")
   write(new_result, "follow")     
   print("Wrote:", len(new_result))
   print("NON-SMOOTHED:", len(result))
