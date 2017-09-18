@@ -71,9 +71,15 @@ def find_common(descriptions):
     print(len(appends), len(norm_desc))
 #    print(norm_desc[1])
     data = [{"title":a[1], "description":a[2], "url_image":a[3], "source": a[0], "old_title": a[4], "old_description": a[5]} for a in appends]
+    s = set()
+    dedup_data = []
+    for d in data:
+      if d['old_title'] not in s:
+        dedup_data.append(d)
+        s.add(d['old_title'])
 #    print(data)
     delete()
-    write(data)
+    write(dedup_data)
     return appends
 #    bigram_measures = nltk.collocations.BigramAssocMeasures()
 #    nltk.download("punkt")

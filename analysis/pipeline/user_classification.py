@@ -3,16 +3,21 @@ sys.path.append('/home/cc/pytweet/analysis/io')
 sys.path.append('/home/cc/pytweet/analysis/')
 sys.path.append('/home/cc/pytweet/analysis/ml')
 
+
 from processing import vectorize
 from mongo_funcs import read
 from logreg import logreg
+from svm import svm
+from forest import random_forest
 from gensim.models.keyedvectors import KeyedVectors
 import numpy as np
 from collections import defaultdict
 
   
 
-data = read("follow")
+data = list(read("follow"))
+#s = np.random.choice(len(list(data)), 10000)
+#data = [data[d] for d in s]
 
 train_data = []
 
@@ -36,6 +41,9 @@ train_samples = [i for i in range(len(x)) if i not in test_samples]
 print(len(x), len(y))
 assert(len(x) == len(y))
 x = x.reshape((len(x), 16*300))
-logreg(x[train_samples], y[train_samples], sys.argv[2], (x[test_samples], y[test_samples]))
+#logreg(x[train_samples], y[train_samples], sys.argv[2], (x[test_samples], y[test_samples]))
+
+random_forest(x[train_samples], y[train_samples], sys.argv[2], (x[test_samples], y[test_samples]))
+
 
 

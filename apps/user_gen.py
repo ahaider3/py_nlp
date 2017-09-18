@@ -36,7 +36,7 @@ def main(argv):
 
   new_result = smooth(result, 2, int(argv[5]))
 #  delete("follow_ft")
-  write(new_result, "follow")     
+  write(new_result, "follow_ft")     
   print("Wrote:", len(new_result))
   print("NON-SMOOTHED:", len(result))
 

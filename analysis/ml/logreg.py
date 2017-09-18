@@ -4,10 +4,10 @@ import numpy as np
 
 def logreg(x, y, output_path, test_data=None):
 
-  logreg = linear_model.LogisticRegression(class_weight='balanced')
+  logreg = linear_model.LogisticRegression(class_weight='balanced', verbose=2)
   accuracy = None
-
-  logreg.fit(x, y)
+  for i in range(2):
+    logreg.fit(x, y)
   with open(output_path, "w") as f:
     pickle.dump(logreg, f)
   if test_data:

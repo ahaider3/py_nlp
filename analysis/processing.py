@@ -132,7 +132,6 @@ def vectorize(data, word_vectors, SEQ_LENGTH=16):
   to_np = onehot(sent_vec)
   onehot_vecs = [to_np[s[0]] for s in sent_vec]
   padded_vecs = pad(SEQ_LENGTH, [s[1] for s in sent_vec], 300)
-  print(len(onehot_vecs), len(padded_vecs))
   assert(len(onehot_vecs) == len(padded_vecs))
 
   return padded_vecs, onehot_vecs
@@ -157,6 +156,19 @@ def onehot(data):
     d[el] = arr
   print(d)
   return d
+
+ 
+def get_recent_tweets(api, tweet, num_posts=100):
+
+  user_id = tweet['user']['id']
+  tweets = []
+  try:
+    tweets = [t.text for t in api.user_timeline(user_id=user_id, count=num_posts, include_rts=False)]
+  except:
+    pass
+  return tweets
+
+  return tweets
 
   
 
