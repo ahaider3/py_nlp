@@ -37,7 +37,7 @@ def main(argv):
   for ind, d in enumerate(cursor_news):
     corpus += d["description"] + "\n" + d["title"]
 
-    d['score'] = infer.infer_logreg(d['description']) + " " +  infer.infer_logreg(d['title'])   
+    d['score'] = infer.infer_logreg(d['description']) +  infer.infer_logreg(d['title'])   
 
 
     id_to_index[d["_id"]] = ind
