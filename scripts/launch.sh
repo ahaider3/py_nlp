@@ -1,5 +1,10 @@
 #!/bin/bash
 
+cd /home/cc/pytweet
+
+export LD_LIBRARY_PATH=/home/cc/tf/old/tensorflow/third_party/mkl/:/opt/intel/mkl/lib/intel64/:/home/cc/cuda/lib64/:$LD_LIBRARY_PATH
+export PATH=/opt/intel/compilers_and_libraries_2017/linux/bin/intel64/:$PATH
+export PATH=/opt/intel/intelpython2/bin/:$PATH
 
 cd /home/cc/pytweet
 
