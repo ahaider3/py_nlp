@@ -90,3 +90,33 @@ def build_logreg(seq_len, batch_size, state_size, num_feats, num_classes=3):
   train_op = adam.minimize(loss)
   return x, y, loss, train_op
 
+
+
+def build_ffn(batch_size, num_feats, layers, num_classes):
+
+  x = tf.placeholder(shape=[None, num_feats], dtype=tf.float32)
+  tf.add_to_collection("x", x)
+  y = tf.placeholder(dtype=tf.float32, shape=[None, num_classes])
+
+  prev = x
+  prev_size = num_feats
+  for ind, l in enumerate(layers):
+    layer = tf.get_variable("layer_" + str(ind), [prev_size, l], 
+			    initializer=tf.random_normal_initializer(mean=0.,
+								     stddev=1.))
+    bias = tf.get_variable("bias_" + str(ind), [l], 
+			    initializer=tf.random_normal_initializer(mean=0.,
+								     stddev=1.))
+    prev = tf.add(tf.matmul(prev, layer), bias)
+    prev_size = l
+
+
+  logits_sm =  prev
+  tf.add_to_collection('pred', logits_sm)
+  loss = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(labels=y, logits=logits_sm))
+#  loss = tf.reduce_mean(tf.square(logits_sm - y))
+
+  adam = tf.train.AdamOptimizer(1e-5)
+  train_op = adam.minimize(loss)
+  return x, y, loss, train_op, logits_sm
+

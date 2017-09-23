@@ -80,6 +80,7 @@ def find_common(descriptions):
 #    print(data)
     delete()
     write(dedup_data)
+    write(dedup_data, "total_news")
     return appends
 #    bigram_measures = nltk.collocations.BigramAssocMeasures()
 #    nltk.download("punkt")

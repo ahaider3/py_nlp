@@ -8,7 +8,7 @@ export PATH=/opt/intel/intelpython2/bin/:$PATH
 
 cd /home/cc/pytweet
 
-python apps/get_news.py cnn bloomberg cnn al-jazeera-english the-huffington-post breitbart-news
+python apps/get_news.py cnn bloomberg al-jazeera-english the-huffington-post breitbart-news cnbc bbc-news the-economist the-wall-street-journal
 
 
 timeout -sHUP 10m python apps/tweet_gen.py >  ~/tweets/test.txt

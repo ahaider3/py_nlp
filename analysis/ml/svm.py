@@ -2,6 +2,7 @@ from sklearn import svm as SVM
 from sklearn import metrics
 import pickle
 import numpy as np
+from sklearn.model_selection import cross_val_score
 
 def svm(x, y, output_path, test_data=None):
 
@@ -18,6 +19,7 @@ def svm(x, y, output_path, test_data=None):
      print("R^2:", metrics.r2_score(test_data[1], pred))
      print("Test Accuracy:", model.score(test_data[0], test_data[1]))
      print("Training Accuracy:", model.score(x, y))
-
+     scores = cross_val_score(model, x, y)
+     print("CROSS VAL SCORE:", scores.mean())
   print("Wrote trained model")
   return accuracy

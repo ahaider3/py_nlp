@@ -9,6 +9,9 @@ from mongo_funcs import read, write, delete
 from rake_nltk import Rake
 from collections import defaultdict
 sys.path.append('/home/cc/pytweet/analysis/')
+sys.path.append('/home/cc/pytweet/analysis/ml')
+from fourier import write_smooth
+
 from src import *
 from infer import InferTimeline, Infer
 from nltk import bigrams
@@ -25,7 +28,6 @@ from multiprocessing import Process, Queue
 #          self.res = []
          
 #        print(res)
-delete("tweet_frequency")
 
 def write_func(data, rt):
   smoothed_data = defaultdict(list)
@@ -39,6 +41,7 @@ def write_func(data, rt):
     
   print(cleaned_data)
   write(cleaned_data, "tweet_frequency")
+  write_smooth()
 
 
 argv = sys.argv[1:]
@@ -63,7 +66,7 @@ while True:
   except:
 
     curr_res += init.l.res
-    if (datetime.now() - start).total_seconds() > 120:
+    if (datetime.now() - start).total_seconds() > 120*5:
       write_func(curr_res, str(start))
       curr_res = []
       start = datetime.now()
