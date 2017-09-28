@@ -137,7 +137,27 @@ def vectorize(data, word_vectors, SEQ_LENGTH=16):
   return padded_vecs, onehot_vecs
 
 
-  
+def vectorize_map(data, word_vectors, mapping , SEQ_LENGTH=16):
+  tknzr = TweetTokenizer(strip_handles=True)
+  cleaned_data = []
+#  cleaned_data = [(sent, tknzr.tokenize(tweet)) for sent, tweet in data]
+  for sent, tweet in data:
+    try: 
+      tknzd = tknzr.tokenize(tweet)
+      cleaned_data.append((sent, tknzd))
+    except:
+      pass
+  print("NUM_PASSED:", len(data) - len(cleaned_data), "TOTAL:", len(data))
+
+  sent_vec = [(sent,string_to_vec(s, word_vectors)) for sent, s in cleaned_data]
+  sent_vec = [s for s in sent_vec if s[1] is not None]
+
+  onehot_vecs = [np.array(mapping[s[0]]) for s in sent_vec]
+  padded_vecs = pad(SEQ_LENGTH, [s[1] for s in sent_vec], 300)
+  assert(len(onehot_vecs) == len(padded_vecs))
+
+  return padded_vecs, onehot_vecs
+ 
 
 
 def onehot(data):

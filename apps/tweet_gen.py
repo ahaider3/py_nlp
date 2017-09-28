@@ -1,17 +1,18 @@
-from mongo_funcs import read
 import sys
-sys.path.insert(0, '/home/cc/pytweet/')
+sys.path.append("/home/cc/aws/py_nlp")
 import pickle
 import json
 import pandas as pd
-from src import *
 import tweepy
+from src.initializer.initialize import *
+#import src
+import analysis
 from rake_nltk import Rake
 from nltk import bigrams
 ## use a pandas df to store (screen_name, location , tweet_id) -- aggregate this data as I stream
 
 def main():
-  data = read()
+  data = analysis.read()
   res = []
   corpus = ""
   for d in data:
@@ -23,14 +24,15 @@ def main():
 
 #  keywords = [ f for k in keywords for f in k.split()]
   tweet_list = []
-  init = initialize.Initializer()
+  init = Initializer()
   init.initialize()
   stream = init.get_stream()
   global api
   api = init.api
   query = keywords
   max_tweets = 10000
-  stream.filter(track=query)
+  min_range = min(100, len(query))
+  stream.filter(track=query[:min_range])
     
 
 

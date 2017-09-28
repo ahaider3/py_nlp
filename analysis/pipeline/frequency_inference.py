@@ -1,25 +1,16 @@
 import json
 import sys
 
-sys.path.append('/home/cc/pytweet/analysis/io')
-sys.path.append('/home/cc/pytweet/analysis/twitter')
-sys.path.insert(0, '/home/cc/pytweet/')
-
-from mongo_funcs import read, write, delete
+import analysis
 from rake_nltk import Rake
 from collections import defaultdict
-sys.path.append('/home/cc/pytweet/analysis/')
-sys.path.append('/home/cc/pytweet/analysis/ml')
-from fourier import write_smooth
 
-from src import *
-from infer import InferTimeline, Infer
+import src
 from nltk import bigrams
 MAX_TWEETS=1000
 from datetime import datetime
-from tweet_extraction import *
 from multiprocessing import Process, Queue
-
+import pickle
 
 #        res = self.model(json.loads(data))
 #        self.res.append(res)
@@ -40,37 +31,36 @@ def write_func(data, rt):
       
     
   print(cleaned_data)
-  write(cleaned_data, "tweet_frequency")
-  write_smooth()
+  analysis.write(cleaned_data, "tweet_frequency")
+  analysis.write_smooth()
 
 
 argv = sys.argv[1:]
 queue = Queue()
-m = {0:'cnn', 1:'BreitbartNews', 2:'FoxNews'}
-infer_tag = InferTimeline(argv[0], 16, argv[1],m)
-init = initialize.PredictInitializer()
-init.initialize(infer_tag.basic_infer, 5, write_func, queue)
-stream = init.get_stream()
+m = pickle.load(open(argv[2], "r"))
+m_inv = {v[0]:k for k,v in m.items()}
+infer_tag = analysis.InferTimeline(argv[0], 16, argv[1],m_inv)
 
 start = datetime.now()
 curr_res = []
+
 while True:
   try:
-    
-    init = initialize.PredictInitializer()
-    init.initialize(infer_tag.basic_infer, 5, write_func, queue)
+    init = src.PredictInitializer()
+    init.initialize(infer_tag.basic_infer, write_func, 120*1, datetime.now())
     stream = init.get_stream()
     global api
     api = init.api
     stream.filter(track=["donald trump"])
   except:
-
-    curr_res += init.l.res
-    if (datetime.now() - start).total_seconds() > 120*5:
-      write_func(curr_res, str(start))
-      curr_res = []
-      start = datetime.now()
+    if len(init.l.res) > 0:
+      curr_res += init.l.res
+      if (datetime.now() - start).total_seconds() > 120*1:
+        write_func(curr_res, str(start))
+        curr_res = []
+        start = datetime.now()
     continue
 
 
 
+from tweet_extraction import *

@@ -1,12 +1,10 @@
 import sys 
-sys.path.append("/home/cc/pytweet/analysis/io/")
-from mongo_funcs import *
 import numpy as np
 from datetime import datetime
 from collections import defaultdict
-
-def write_smooth():
-  data = list(read("tweet_frequency"))
+import analysis
+def write_smooth(coll="tweet_frequency"):
+  data = list(analysis.read(coll))
   out_data = []
   d_times = defaultdict(list)
   for d in data:
@@ -34,7 +32,7 @@ def write_smooth():
   for d in d_times:
     out_data += d_times[d]
   
-  delete("tweet_frequency_smooth")
-  write(out_data, "tweet_frequency_smooth")
+  analysis.delete(coll + "_smooth")
+  analysis.write(out_data, coll + "_smooth")
   print("WROTE SMOOTH:", len(out_data))
   

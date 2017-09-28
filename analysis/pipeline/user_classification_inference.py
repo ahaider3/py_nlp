@@ -1,26 +1,22 @@
 import json
 import sys
 
-sys.path.append('/home/cc/pytweet/analysis/io')
-sys.path.append('/home/cc/pytweet/analysis/twitter')
-sys.path.insert(0, '/home/cc/pytweet/')
 
-from mongo_funcs import read, write, delete
 from rake_nltk import Rake
 from collections import defaultdict
-sys.path.append('/home/cc/pytweet/analysis/')
-from src import *
-from infer import InferTimeline, Infer
 from nltk import bigrams
 MAX_TWEETS=1000
-
-from tweet_extraction import *
+import pickle
+import analysis
+import src
 
 argv = sys.argv[1:]
 
-infer = Infer(argv[1], 16, argv[3])
-m = {0:'cnn', 1:'BreitbartNews', 2:'FoxNews'}
-init = initialize.Initializer()
+infer = analysis.Infer(argv[1], 16, argv[3])
+
+m = pickle.load(open(argv[4]))
+m_inv = {v[0]:k for k, v in m.items()}
+init = src.Initializer()
 init.initialize()
 stream = init.get_stream()
 global api
@@ -28,7 +24,7 @@ api = init.api
 
 
 
-infer_tag = InferTimeline(argv[1], 16, argv[2],m, api)
+infer_tag = analysis.InferTimeline(argv[1], 16, argv[2],m_inv, api)
 
 f = open(argv[0], "r")
 raw = f.readlines()
@@ -41,7 +37,7 @@ for r in raw:
   except:
     pass
 print(len(data))
-cursor_news = read()
+cursor_news = analysis.read()
 corpus = ""
 id_to_index = {}
 news = []
@@ -75,7 +71,7 @@ for d in [d_ for d_ in data if "text" in d_]:
       ids = keyword_to_id[keyword]
       for id_ in ids:
         ind = id_to_index[id_]
-        text = get_text(d)
+        text = analysis.get_text(d)
         if text not in sets[ind] and len(news[ind]['tweets']) < MAX_TWEETS:
           sets[ind].add(text)
           news[ind]['tweets'].append(text)
@@ -86,8 +82,10 @@ for d in [d_ for d_ in data if "text" in d_]:
 
 for ind in range(len(news)):
   d = defaultdict(int)
-  var = {'cnn':0, 'FoxNews':0, 'BreitbartNews': 0}
-  var_freq = {'cnn':0, 'FoxNews':0, 'BreitbartNews': 0}
+#  var = {'cnn':0, 'FoxNews':0, 'BreitbartNews': 0}
+#  var_freq = {'cnn':0, 'FoxNews':0, 'BreitbartNews': 0}
+  var = {k:0 for k,v in m.items()}
+  var_freq = {k:0 for k in m}
   for idx, tag in enumerate(news[ind]['tagsource']):
     if tag is not None:
       var[tag] += news[ind]['sentiments'][idx]
@@ -105,6 +103,6 @@ final_data = []
 for d in news:
   d.pop("_id")
   final_data.append(d)
-delete("tweets")
-write(final_data, "tweets")     
+analysis.delete("tweets")
+analysis.write(final_data, "tweets")     
 
