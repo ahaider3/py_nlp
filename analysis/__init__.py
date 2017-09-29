@@ -8,3 +8,4 @@ from processing import *
 from .infer import *
 from .twitter.tweet_extraction import *
 from .ml.rnn import *
+from .ml.lstm_v1 import *
