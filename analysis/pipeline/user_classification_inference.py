@@ -65,6 +65,8 @@ for keyword in keywords:
 num_joined = 0
 print('DONE')
 sets = [set() for i in range(len(news))]
+assert(len(data) > 0)
+print(len(data))
 for d in [d_ for d_ in data if "text" in d_]:
   for keyword in keywords:
     if keyword in d['text']:
@@ -92,7 +94,7 @@ for ind in range(len(news)):
       var_freq[tag] += 1
 
   score = max(var.items(), lambda k: k[1])[1]
-  common = max(var_freq.items(), lambda k: k[1])[0]
+  common = sum([j[1] for j in var_freq.items()])
 
   news[ind]['score'] = score
   news[ind]['type'] = common
@@ -103,6 +105,6 @@ final_data = []
 for d in news:
   d.pop("_id")
   final_data.append(d)
-analysis.delete("tweets")
+#analysis.delete("tweets")
 analysis.write(final_data, "tweets")     
 

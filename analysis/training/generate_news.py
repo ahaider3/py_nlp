@@ -7,7 +7,7 @@ import codecs
 from datetime import datetime
 lr = 1e-1
 seq_length=25
-hidden_size = 1000
+hidden_size = 256
 
 def get_new_data():
   news_data = list(analysis.read("total_news"))
@@ -47,8 +47,9 @@ for i in range(10000000):
     idxs = rnn.inference(inputs[0], 200, hprev)
     out = ''.join(ix_char[ix] for ix in idxs)
     print '----\n %s \n----' % (out, )
+    print("iter:", i)
 
-  if not i % 100000:
+  if not i % 10000:
     idxs = rnn.inference(inputs[0], 200, hprev)
     out = ''.join(ix_char[ix] for ix in idxs)
     d = {}
