@@ -9,3 +9,6 @@ from .infer import *
 from .twitter.tweet_extraction import *
 from .ml.rnn import *
 from .ml.lstm_v1 import *
+from .ml.fc import *
+from .ml.lstm_v2 import *
+from .ml.activation_funcs import *

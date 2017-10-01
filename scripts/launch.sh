@@ -19,7 +19,7 @@ python analysis/pipeline/user_classification_inference.py /home/cc/tweets/test.t
 
 #python apps/news_analysis.py ~/sent_train/GoogleNews-vectors-negative300.bin ~/temp_model/subj/logreg-5960000
 
-
+python apps/reduce_tweets.py
 
 
 

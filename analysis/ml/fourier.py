@@ -20,7 +20,7 @@ def write_smooth(coll="tweet_frequency"):
     mean = float(sum(ys))/len(ys)
     ys = [y for y in ys]
     rfft = np.fft.rfft(ys)
-    rfft[10:] = 0
+    rfft[5:] = 0
   
     irfft = np.fft.irfft(rfft)
     print(len(irfft), len(d_times[d]))

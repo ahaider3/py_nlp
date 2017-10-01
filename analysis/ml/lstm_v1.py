@@ -20,13 +20,13 @@ class LSTM(object):
 
     d = self.WLSTM.shape[1]/4
     
-    if c0 is None: c0 = np.zeros((b,d))
-    if h0 is None: h0 = np.zeros((b,d))
+    if c0 is None: c0 = np.zeros((b,d)) # batch size X hidden size
+    if h0 is None: h0 = np.zeros((b,d)) # batch size X hidden size
     
-    xphpb = self.WLSTM.shape[0]
+    xphpb = self.WLSTM.shape[0] # input size + hidden size + bias
  
     Hin = np.zeros((n, b, xphpb))
-    Hout = np.zeros((n, b, d))
+    Hout = np.zeros((n, b, d))  # seq len X batch size X output for each t output a hidden
     IFOG = np.zeros((n, b, d* 4))
     IFOGf = np.zeros((n, b, d*4))
     C = np.zeros((n,b,d))
@@ -34,8 +34,8 @@ class LSTM(object):
 
     for t in range(n):
       prevh = Hout[t-1] if t> 0 else h0
-      Hin[t,:, 0] = 1
-      Hin[t, :, 1:input_size+1] = X[t]
+      Hin[t,:, 0] = 1 # for this seq set bias to 1
+      Hin[t, :, 1:input_size+1] = X[t] # populate inpute
       Hin[t, :, input_size+1:] = prevh
 
       # compute
@@ -45,9 +45,9 @@ class LSTM(object):
       IFOGf[t,:,3*d:] = np.tanh(IFOG[t,:,3*d:])
 
       prevc = C[t-1] if t > 0 else c0
-      C[t] = IFOGf[t, :, :d] * IFOGf[t, :, 3*d:] + IFOGf[t,:,d:2*d] * prevc
+      C[t] = IFOGf[t, :, :d] * IFOGf[t, :, 3*d:] + IFOGf[t,:,d:2*d] * prevc # i_t * c_in_t + f_t * c_t-1
       Ct[t] = np.tanh(C[t])
-      Hout[t] = IFOGf[t,:,2*d:3*d] * Ct[t]
+      Hout[t] = IFOGf[t,:,2*d:3*d] * Ct[t] # c_t * o_T
 
 
     cache = {}
@@ -143,7 +143,6 @@ class Adagrad_LSTM(object):
     for param, dparam, mparam in zip(model_params, model_grads, self.mem):
 
       mparam += dparam * dparam
-      print(np.shape(param), np.shape(dparam), np.shape(mparam))
       param += -self.lr * dparam / np.sqrt(mparam+ 1e-8)
 
 

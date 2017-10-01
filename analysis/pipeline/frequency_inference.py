@@ -47,7 +47,7 @@ curr_res = []
 while True:
   try:
     init = src.PredictInitializer()
-    init.initialize(infer_tag.basic_infer, write_func, 120*1, datetime.now())
+    init.initialize(infer_tag.basic_infer, write_func, 120*5, datetime.now())
     stream = init.get_stream()
     global api
     api = init.api
@@ -55,7 +55,7 @@ while True:
   except:
     if len(init.l.res) > 0:
       curr_res += init.l.res
-      if (datetime.now() - start).total_seconds() > 120*1:
+      if (datetime.now() - start).total_seconds() > 120*5:
         write_func(curr_res, str(start))
         curr_res = []
         start = datetime.now()
